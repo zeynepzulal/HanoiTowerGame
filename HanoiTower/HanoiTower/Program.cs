@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 
 namespace HanoiTower
@@ -30,50 +31,53 @@ namespace HanoiTower
 
         static void Main(string[] args)
         {
+
             //Variables
             int numberOfDisks = 3;
             int numberOfRods = 3;
-            List<int[]> rods = new()
-            {
-                new[] {0, 0},
-                new[] {1, 0},
-                new[] {2, 0}
+            List<Disk>[] rods = new[]{
+              new List<Disk>
+              {
+                new Disk(0, 1, 8,"red"),
+                new Disk(0, 2, 6,"blue"),
+                new Disk(0, 3, 4,"green"),
+                new Disk(0,4,2,"red")
+              },
+               new List<Disk>
+              {
+                
+              },
+                new List<Disk>
+              {
+                
+              }
             };
 
-            int[] inWhichRod = rods[0];
-            //Console.WriteLine(inWhichRod[0]);
+            int maxSizeOfTheRod = 21;
 
-            Disk[] diskArray = new Disk[3]
+            viewDisk(rods, maxSizeOfTheRod);
+            Console.WriteLine("hangi cubuktan tasimak istiyorsunuz? (1,2,3)");
+            var soru = Console.ReadLine().ToString();
+            if(int.TryParse(soru, out int firstRod))
             {
-                new Disk(0, 1, 30,"red"),
-                new Disk(0, 2, 20,"blue"),
-                new Disk(0, 3, 15,"green")
-            };
-
-            /*
-            foreach (Disk disk in diskArray)
-            {
-                Console.WriteLine(disk);
+                Console.WriteLine("hangi cubuga tasimak istiyorsunuz? (1,2,3)");
+                if(int.TryParse(Console.ReadLine().ToString(), out int lastRod))
+                {
+                    var lastDisk = rods[firstRod-1].Last();
+                    rods[firstRod-1].RemoveAt(rods[firstRod-1].Count - 1);
+                    rods[lastRod-1].Add(lastDisk);
+                }
             }
-            */
-
-            // disks and rods:
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.SetCursorPosition(diskArray[0].x, diskArray[0].y); Console.WriteLine("<=====> ");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.SetCursorPosition(diskArray[1].x, diskArray[1].y); Console.WriteLine("<=========> ");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.SetCursorPosition(diskArray[2].x, diskArray[2].y); Console.WriteLine("<==============> ");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(inWhichRod[0], inWhichRod[1]);
-            //Console.Write("|\r\n|\r\n|\r\n|\r\n|\r\n|\r\n|");
-
+            Console.Clear();
+            viewDisk(rods, maxSizeOfTheRod);
+            
             bool isGameContinue = true;
 
             //Loops
             while (isGameContinue)
             {
                 MoveTo();
+
             }
 
             HaveYouSucceeded();
@@ -87,6 +91,58 @@ namespace HanoiTower
         static void MoveTo()
         {
             //model function
+        }
+
+        static void viewDisk(List<Disk>[] rods, int maxSizeOfRod)
+        {
+            for (int j = 10; j >= 0; j--)
+            {
+                for (int i = 0; i < rods.Length; i++)
+                {
+                    var disks = rods[i];
+                   
+                    if(j >= disks.Count)
+                    {
+                        Console.Write(new String(' ', maxSizeOfRod/2));
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("|");
+                        Console.Write(new String(' ', maxSizeOfRod / 2));
+
+                    }
+                    else
+                    {
+                        var disk = disks[j];
+                        int emptySpaces = (maxSizeOfRod - disk.size) / 2;
+                        Console.Write(new String(' ', emptySpaces));
+                        var color = ConsoleColor.White;
+                        if (disk.color == "red")
+                        {
+                            color = ConsoleColor.Red;
+                        }
+                        if (disk.color == "blue")
+                        {
+                            color = ConsoleColor.Blue;
+                        }
+                        if (disk.color == "green")
+                        {
+                            color = ConsoleColor.Green;
+                        }
+                        Console.ForegroundColor = color;
+                        Console.Write(new String('■', disk.size/2));
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("|");
+                        Console.ForegroundColor = color;
+                        Console.Write(new String('■', disk.size / 2));
+
+                        Console.Write(new String(' ', emptySpaces));
+
+                    }
+                    
+                    
+                }
+                 Console.WriteLine();
+            }
+
         }
     }
 }
