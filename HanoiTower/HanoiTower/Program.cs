@@ -8,16 +8,11 @@ namespace HanoiTower
     {
         public class Disk
         {
-            public int x;
-            public int y;
+
             public int size;
             public string color;
-
-            //hangi çubukta oldugunu göstermek için bir degisken ekleyebilirsin.
-            public Disk(int _x, int _y, int _size, string _color)
+            public Disk(int _size, string _color)
             {
-                x = _x;
-                y = _y;
                 size = _size;
                 color = _color;
 
@@ -25,7 +20,7 @@ namespace HanoiTower
 
             public override string ToString()
             {
-                return $"Disk: x={x}, y={y}, size={size}, color={color}";
+                return $"Disk: size={size}, color={color}";
             }
         }
 
@@ -38,46 +33,34 @@ namespace HanoiTower
             List<Disk>[] rods = new[]{
               new List<Disk>
               {
-                new Disk(0, 1, 8,"red"),
-                new Disk(0, 2, 6,"blue"),
-                new Disk(0, 3, 4,"green"),
-                new Disk(0,4,2,"red")
+                new Disk(8,"red"),
+                new Disk(6,"blue"),
+                new Disk(4,"green"),
+                new Disk(2,"yellow")
               },
-               new List<Disk>
-              {
-                
-              },
-                new List<Disk>
-              {
-                
-              }
+               new List<Disk>{},
+               new List<Disk>{}
             };
 
             int maxSizeOfTheRod = 21;
-
-            viewDisk(rods, maxSizeOfTheRod);
-            Console.WriteLine("hangi cubuktan tasimak istiyorsunuz? (1,2,3)");
-            var soru = Console.ReadLine().ToString();
-            if(int.TryParse(soru, out int firstRod))
-            {
-                Console.WriteLine("hangi cubuga tasimak istiyorsunuz? (1,2,3)");
-                if(int.TryParse(Console.ReadLine().ToString(), out int lastRod))
-                {
-                    var lastDisk = rods[firstRod-1].Last();
-                    rods[firstRod-1].RemoveAt(rods[firstRod-1].Count - 1);
-                    rods[lastRod-1].Add(lastDisk);
-                }
-            }
-            Console.Clear();
-            viewDisk(rods, maxSizeOfTheRod);
-            
             bool isGameContinue = true;
+            int[] validRodNum = new int[3] { 1, 2, 3 };
+
+
+
+
 
             //Loops
             while (isGameContinue)
             {
-                MoveTo();
-
+                int fromWhichRod;
+                int toWhichrod;
+                while (isGameContinue)
+                {
+                    ViewDisk(rods, maxSizeOfTheRod);
+                    MoveTo(rods, validRodNum);
+                   
+                }
             }
 
             HaveYouSucceeded();
@@ -88,22 +71,17 @@ namespace HanoiTower
             //view
         }
 
-        static void MoveTo()
-        {
-            //model function
-        }
-
-        static void viewDisk(List<Disk>[] rods, int maxSizeOfRod)
+        static void ViewDisk(List<Disk>[] rods, int maxSizeOfRod)
         {
             for (int j = 10; j >= 0; j--)
             {
                 for (int i = 0; i < rods.Length; i++)
                 {
                     var disks = rods[i];
-                   
-                    if(j >= disks.Count)
+
+                    if (j >= disks.Count)
                     {
-                        Console.Write(new String(' ', maxSizeOfRod/2));
+                        Console.Write(new String(' ', maxSizeOfRod / 2));
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("|");
                         Console.Write(new String(' ', maxSizeOfRod / 2));
@@ -127,8 +105,12 @@ namespace HanoiTower
                         {
                             color = ConsoleColor.Green;
                         }
+                        if (disk.color == "yellow")
+                        {
+                            color = ConsoleColor.Yellow;
+                        }
                         Console.ForegroundColor = color;
-                        Console.Write(new String('■', disk.size/2));
+                        Console.Write(new String('■', disk.size / 2));
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("|");
                         Console.ForegroundColor = color;
@@ -137,12 +119,30 @@ namespace HanoiTower
                         Console.Write(new String(' ', emptySpaces));
 
                     }
-                    
-                    
+
+
                 }
-                 Console.WriteLine();
+                Console.WriteLine();
             }
 
         }
+        static void MoveTo(List<Disk>[] rods, int[] validRodNum)
+        {
+            Console.WriteLine("hangi cubuktan tasimak istiyorsunuz? (1,2,3)");
+            var fromWhich = Console.ReadLine().ToString();
+            if (int.TryParse(fromWhich, out int firstRod))
+            {
+                Console.WriteLine("hangi cubuga tasimak istiyorsunuz? (1,2,3)");
+                if (int.TryParse(Console.ReadLine().ToString(), out int lastRod)) // girilien sayi 1,2 veya 3 den baska bir sey olmamali buna dikkat et.
+                {
+                    var lastDisk = rods[firstRod - 1].Last();
+                    rods[firstRod - 1].RemoveAt(rods[firstRod - 1].Count - 1);
+                    rods[lastRod - 1].Add(lastDisk);
+                }
+            }
+            Console.Clear();
+        }
+        
     }
+
 }
