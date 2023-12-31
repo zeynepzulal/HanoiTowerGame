@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 
 namespace HanoiTower
 {
@@ -44,7 +45,7 @@ namespace HanoiTower
 
             int maxSizeOfTheRod = 21;
             bool isGameContinue = true;
-            int[] validRodNum = new int[3] { 1, 2, 3 };
+            string[] validRodNum = new string[3] { "1", "2", "3" };
 
 
 
@@ -53,23 +54,22 @@ namespace HanoiTower
             //Loops
             while (isGameContinue)
             {
-                int fromWhichRod;
-                int toWhichrod;
+                string fromWhichRod = " ";
+                string toWhichRod = " ";
                 while (isGameContinue)
                 {
                     ViewDisk(rods, maxSizeOfTheRod);
-                    MoveTo(rods, validRodNum);
-                   
+                    MoveTo(rods, validRodNum, fromWhichRod, toWhichRod);
                 }
+
+                HaveYouSucceeded(rods, fromWhichRod, toWhichRod, isGameContinue);
+                ViewDisk(rods, maxSizeOfTheRod);
             }
 
-            HaveYouSucceeded();
+
         }
 
-        static void HaveYouSucceeded()
-        {
-            //view
-        }
+
 
         static void ViewDisk(List<Disk>[] rods, int maxSizeOfRod)
         {
@@ -126,23 +126,70 @@ namespace HanoiTower
             }
 
         }
-        static void MoveTo(List<Disk>[] rods, int[] validRodNum)
+        static void MoveTo(List<Disk>[] rods, string[] validRodNum, string fromWhichRod, string toWhichRod)
+
         {
-            Console.WriteLine("hangi cubuktan tasimak istiyorsunuz? (1,2,3)");
-            var fromWhich = Console.ReadLine().ToString();
-            if (int.TryParse(fromWhich, out int firstRod))
+
+            while (true)
             {
-                Console.WriteLine("hangi cubuga tasimak istiyorsunuz? (1,2,3)");
-                if (int.TryParse(Console.ReadLine().ToString(), out int lastRod)) // girilien sayi 1,2 veya 3 den baska bir sey olmamali buna dikkat et.
+                Console.WriteLine("From which rod do you want to move the disc ? (1, 2 or 3)");
+
+                fromWhichRod = Console.ReadLine().ToString();
+
+                if (!validRodNum.Contains(fromWhichRod))
                 {
-                    var lastDisk = rods[firstRod - 1].Last();
-                    rods[firstRod - 1].RemoveAt(rods[firstRod - 1].Count - 1);
-                    rods[lastRod - 1].Add(lastDisk);
+                    Console.WriteLine("This is not a valid rod number. Please enter a valid rod number!");
+                    continue;
+                }
+                if (rods[int.Parse(fromWhichRod) - 1].Count == 0)
+                {
+                    Console.WriteLine("There is not any disk to move");
+                    continue;
+                }
+                else
+                {
+                    break;
+
                 }
             }
+            while (true)
+            {
+                Console.WriteLine("To Which rod do you want to move the disc ? (1, 2 or 3)");
+                toWhichRod = Console.ReadLine().ToString();
+                if (!validRodNum.Contains(toWhichRod))
+                {
+                    Console.WriteLine("This is not a valid rod number. Please enter a valid rod number!");
+                    continue;
+                }
+                if (rods[int.Parse(toWhichRod) - 1].LastOrDefault() != null)
+                {
+                    if (rods[int.Parse(toWhichRod) - 1].Last().size < rods[int.Parse(fromWhichRod) - 1].Last().size)
+                    {
+                        Console.WriteLine("You cant put a larger disk on a smaller disk! Choose a smaller disk to put on it.");
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            var theMovingDisk = rods[int.Parse(fromWhichRod) - 1].Last(); //tipi disk
+            rods[int.Parse(fromWhichRod) - 1].RemoveAt(rods[int.Parse(fromWhichRod)- 1].Count - 1); // tipi int olmali
+            rods[int.Parse(toWhichRod) - 1].Add(theMovingDisk);
+            
             Console.Clear();
+
         }
-        
+
+        static void HaveYouSucceeded(List<Disk>[] rods, string fromWhichRod, string toWhichRod, bool isGameContinue)
+        {
+            if (rods[int.Parse(fromWhichRod)].Count == rods[int.Parse(toWhichRod)].Count)
+            {
+                Console.WriteLine("Congrats! You won");
+                isGameContinue = false;
+            }
+        }
     }
 
 }
