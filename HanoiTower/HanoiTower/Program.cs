@@ -34,8 +34,7 @@ namespace HanoiTower
             List<Disk>[] rods = new[]{
               new List<Disk>
               {
-                new Disk(8,"red"),
-                new Disk(6,"blue"),
+                new Disk(6,"red"),
                 new Disk(4,"green"),
                 new Disk(2,"yellow")
               },
@@ -60,10 +59,11 @@ namespace HanoiTower
                 {
                     ViewDisk(rods, maxSizeOfTheRod);
                     MoveTo(rods, validRodNum, fromWhichRod, toWhichRod);
+                    HaveYouSucceeded(rods, fromWhichRod, toWhichRod, ref isGameContinue);
+                    
                 }
 
-                HaveYouSucceeded(rods, fromWhichRod, toWhichRod, isGameContinue);
-                ViewDisk(rods, maxSizeOfTheRod);
+                DoYouWantToContinue();
             }
 
 
@@ -179,20 +179,25 @@ namespace HanoiTower
             }
 
             var theMovingDisk = rods[int.Parse(fromWhichRod) - 1].Last(); //tipi disk
-            rods[int.Parse(fromWhichRod) - 1].RemoveAt(rods[int.Parse(fromWhichRod)- 1].Count - 1); // tipi int olmali
+            rods[int.Parse(fromWhichRod) - 1].RemoveAt(rods[int.Parse(fromWhichRod) - 1].Count - 1); // tipi int olmali
             rods[int.Parse(toWhichRod) - 1].Add(theMovingDisk);
-            
+
             Console.Clear();
 
         }
 
-        static void HaveYouSucceeded(List<Disk>[] rods, string fromWhichRod, string toWhichRod, bool isGameContinue)
+        static void HaveYouSucceeded(List<Disk>[] rods, string fromWhichRod, string toWhichRod, ref bool isGameContinue)
         {
-            if (rods[0] == rods[1] || rods[0] == rods[2])
-            {
+            if (rods[1].Count == 3 || rods[2].Count == 3){
                 Console.WriteLine("Congrats! You won");
                 isGameContinue = false;
             }
+
+        }
+
+        static void DoYouWantToContinue()
+        {
+            Console.WriteLine("Do you want to continue ?");
         }
     }
 
