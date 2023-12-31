@@ -167,6 +167,10 @@ namespace HanoiTower
                     {
                         Console.WriteLine("You cant put a larger disk on a smaller disk! Choose a smaller disk to put on it.");
                     }
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
                 {
@@ -184,7 +188,7 @@ namespace HanoiTower
 
         static void HaveYouSucceeded(List<Disk>[] rods, string fromWhichRod, string toWhichRod, bool isGameContinue)
         {
-            if (rods[int.Parse(fromWhichRod)].Count == rods[int.Parse(toWhichRod)].Count)
+            if (rods[0] == rods[1] || rods[0] == rods[2])
             {
                 Console.WriteLine("Congrats! You won");
                 isGameContinue = false;
