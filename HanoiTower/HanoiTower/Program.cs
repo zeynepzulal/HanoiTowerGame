@@ -45,30 +45,31 @@ namespace HanoiTower
 
             int maxSizeOfTheRod = 21;
             bool isGameContinue = true;
-            string[] validRodNum = new string[3] { "1", "2", "3" };
+            int[] validRodNum = new int[3] { 1, 2, 3 };
 
 
             //Loops
             while (isGameContinue)
             {
-                string fromWhichRod = " ";
-                string toWhichRod = " ";
+
                 while (isGameContinue)
                 {
+                    int fromWhichRod = 0;
+                    int toWhichRod = 0;
                     ViewDisk(rods, maxSizeOfTheRod);
-                    MoveTo(rods, validRodNum, fromWhichRod, toWhichRod);
-                    HaveYouSucceeded(rods, fromWhichRod, toWhichRod, ref isGameContinue);
+                    MoveTo(rods, ref validRodNum, ref fromWhichRod, ref toWhichRod);
+                    HaveYouSucceeded(rods, ref isGameContinue);
 
                 }
 
                 DoYouWantToContinue();
-               
+
             }
 
 
         }
 
-        
+
 
         static void ViewDisk(List<Disk>[] rods, int maxSizeOfRod)
         {
@@ -125,27 +126,28 @@ namespace HanoiTower
             }
 
         }
-        static void MoveTo(List<Disk>[] rods, string[] validRodNum, string fromWhichRod, string toWhichRod)
+        static void MoveTo(List<Disk>[] rods, ref int[] validRodNum, ref int fromWhichRod, ref int toWhichRod)
 
         {
 
             while (true)
             {
+
                 Console.WriteLine("From which rod do you want to move the disc ? (1, 2 or 3)");
 
-                fromWhichRod = Console.ReadLine().ToString();
+                fromWhichRod = int.Parse(Console.ReadLine());
 
                 if (!validRodNum.Contains(fromWhichRod))
                 {
                     Console.WriteLine("This is not a valid rod number. Please enter a valid rod number!");
                     continue;
                 }
-                if (rods[int.Parse(fromWhichRod) - 1].Count == 0)
+                if (rods[fromWhichRod - 1].Count == 0)
                 {
                     Console.WriteLine("There is not any disk to move");
                     continue;
                 }
-                if (FindMax(rods, rods[int.Parse(fromWhichRod) - 1].Last().size) && rods[1].Count != 0 && rods[2].Count !=0)
+                if (FindMax(rods, rods[fromWhichRod - 1].Last().size) && rods[1].Count != 0 && rods[2].Count != 0)
                 {
                     Console.WriteLine("This is the biggest disk, you cant move this rigt now to anywhere! ");
                     continue;
@@ -153,21 +155,21 @@ namespace HanoiTower
                 else
                 {
                     break;
-
                 }
             }
+
             while (true)
             {
                 Console.WriteLine("To Which rod do you want to move the disc ? (1, 2 or 3)");
-                toWhichRod = Console.ReadLine().ToString();
+                toWhichRod = int.Parse(Console.ReadLine());
                 if (!validRodNum.Contains(toWhichRod))
                 {
                     Console.WriteLine("This is not a valid rod number. Please enter a valid rod number!");
                     continue;
                 }
-                if (rods[int.Parse(toWhichRod) - 1].LastOrDefault() != null)
+                if (rods[toWhichRod - 1].LastOrDefault() != null)
                 {
-                    if (rods[int.Parse(toWhichRod) - 1].Last().size < rods[int.Parse(fromWhichRod) - 1].Last().size)
+                    if (rods[toWhichRod - 1].Last().size < rods[fromWhichRod - 1].Last().size)
                     {
                         Console.WriteLine("You cant put a larger disk on a smaller disk! Choose a smaller disk to put on it.");
                     }
@@ -179,18 +181,19 @@ namespace HanoiTower
                 else
                 {
                     break;
+
                 }
+
+
             }
 
-            var theMovingDisk = rods[int.Parse(fromWhichRod) - 1].Last(); //tipi disk
-            rods[int.Parse(fromWhichRod) - 1].RemoveAt(rods[int.Parse(fromWhichRod) - 1].Count - 1); // tipi int olmali
-            rods[int.Parse(toWhichRod) - 1].Add(theMovingDisk);
-
+            var theMovingDisk = rods[fromWhichRod - 1].LastOrDefault(); //tipi disk
+            rods[fromWhichRod - 1].RemoveAt(rods[fromWhichRod - 1].Count - 1); // tipi int olmali
+            rods[toWhichRod - 1].Add(theMovingDisk);
             Console.Clear();
 
         }
-
-        static void HaveYouSucceeded(List<Disk>[] rods, string fromWhichRod, string toWhichRod, ref bool isGameContinue)
+        static void HaveYouSucceeded(List<Disk>[] rods, ref bool isGameContinue)
         {
             if (rods[1].Count == 3 || rods[2].Count == 3)
             {
@@ -217,20 +220,21 @@ namespace HanoiTower
                     sizes.Add(rods[i][j].size);
                 }
             }
-            for(int i = 0; i < sizes.Count; i++)
+            for (int i = 0; i < sizes.Count; i++)
             {
-                if(sizes[i] > maxSize)
+                if (sizes[i] > maxSize)
                 {
                     maxSize = sizes[i];
                 }
             }
             //Console.WriteLine(maxSize);
-            if(maxSize == lastDisk)
+            if (maxSize == lastDisk)
             {
                 return true;
             }
             return false;
         }
-    }
 
+    }
 }
+
