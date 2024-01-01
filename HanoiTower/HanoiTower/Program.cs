@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Reflection.Metadata.Ecma335;
 
 namespace HanoiTower
@@ -36,7 +37,7 @@ namespace HanoiTower
               {
                 new Disk(6,"red"),
                 new Disk(4,"green"),
-                new Disk(2,"yellow")
+                new Disk(2,"blue")
               },
                new List<Disk>{},
                new List<Disk>{}
@@ -45,9 +46,6 @@ namespace HanoiTower
             int maxSizeOfTheRod = 21;
             bool isGameContinue = true;
             string[] validRodNum = new string[3] { "1", "2", "3" };
-
-
-
 
 
             //Loops
@@ -60,16 +58,17 @@ namespace HanoiTower
                     ViewDisk(rods, maxSizeOfTheRod);
                     MoveTo(rods, validRodNum, fromWhichRod, toWhichRod);
                     HaveYouSucceeded(rods, fromWhichRod, toWhichRod, ref isGameContinue);
-                    
+
                 }
 
                 DoYouWantToContinue();
+               
             }
 
 
         }
 
-
+        
 
         static void ViewDisk(List<Disk>[] rods, int maxSizeOfRod)
         {
@@ -146,6 +145,11 @@ namespace HanoiTower
                     Console.WriteLine("There is not any disk to move");
                     continue;
                 }
+                if (FindMax(rods, rods[int.Parse(fromWhichRod) - 1].Last().size) && rods[1].Count != 0 && rods[2].Count !=0)
+                {
+                    Console.WriteLine("This is the biggest disk, you cant move this rigt now to anywhere! ");
+                    continue;
+                }
                 else
                 {
                     break;
@@ -188,7 +192,8 @@ namespace HanoiTower
 
         static void HaveYouSucceeded(List<Disk>[] rods, string fromWhichRod, string toWhichRod, ref bool isGameContinue)
         {
-            if (rods[1].Count == 3 || rods[2].Count == 3){
+            if (rods[1].Count == 3 || rods[2].Count == 3)
+            {
                 Console.WriteLine("Congrats! You won");
                 isGameContinue = false;
             }
@@ -198,6 +203,33 @@ namespace HanoiTower
         static void DoYouWantToContinue()
         {
             Console.WriteLine("Do you want to continue ?");
+        }
+
+
+        static bool FindMax(List<Disk>[] rods, int lastDisk)
+        {
+            int maxSize = 0;
+            List<int> sizes = new List<int> { };
+            for (int i = 0; i < rods.Length; i++)
+            {
+                for (int j = 0; j < rods[i].Count; j++)
+                {
+                    sizes.Add(rods[i][j].size);
+                }
+            }
+            for(int i = 0; i < sizes.Count; i++)
+            {
+                if(sizes[i] > maxSize)
+                {
+                    maxSize = sizes[i];
+                }
+            }
+            //Console.WriteLine(maxSize);
+            if(maxSize == lastDisk)
+            {
+                return true;
+            }
+            return false;
         }
     }
 
